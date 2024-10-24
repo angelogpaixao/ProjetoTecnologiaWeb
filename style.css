@@ -1,0 +1,153 @@
+/* Estilos Gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #0056b3;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Estilos para Containers */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+/* Estilos para Itens */
+.item {
+    background-color: white;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 20px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.item img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.item h2 {
+    color: #333;
+}
+
+/* Estilos para Botões */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo para o link que envolve o botão */
+.item_botao {
+    position: relative; /* Torna o contêiner pai para o posicionamento do botão */
+    display: inline-block; /* Garante que o contêiner tenha o tamanho do conteúdo */
+    width: 100%; /* Faz com que o link ocupe 100% da largura do contêiner */
+    height: 100px; /* Altura ajustável conforme necessário */
+    text-align: right; /* Alinha o conteúdo (botão) à direita */
+}
+
+/* Estilo para o botão */
+.obj-button {
+    position: absolute;
+    bottom: 10px; /* Ajusta a distância do botão em relação ao canto inferior */
+    right: 10px;  /* Ajusta a distância do botão em relação ao canto direito */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Efeito hover */
+.obj-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Estilos para Modais */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+/* Estilos para Formulários */
+.form-section {
+    background-color: white;
+    margin: 20px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h2 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+form input,
+form textarea {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Resumo de todos os botões */
+form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
