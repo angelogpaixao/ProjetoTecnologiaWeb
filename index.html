@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Achados e Perdidos</title>
+    <title>Achados e Perdidos - Página Inicial</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <header>
     <h1>Achados e Perdidos</h1>
 </header>
 
 <section class="form-section">
-    <h2>Adicionar Objeto Perdido</h2>
+    <h2>Adicionar ou Editar Objeto Perdido</h2>
     <form id="add-item-form">
         <label for="item-image">Imagem do Objeto:</label>
         <input type="file" id="item-image" accept="image/*" required>
@@ -27,12 +26,12 @@
         <label for="item-location">Localização Atual:</label>
         <input type="text" id="item-location" placeholder="Ex: Delegacia, Rua, etc." required>
 
-        <button type="submit">Adicionar Objeto</button>
+        <button type="submit" class="button" id="submit-button">Adicionar Objeto</button>
+        <button type="button" class="button" id="edit-button" style="display: none;">Editar Objeto</button>
+        <button type="button" class="button" id="cancel-edit-button" style="display: none;">Cancelar Edição</button>
     </form>
 
-    <a href="listagem.html" target="_blank" class="item_botao">
-        <button class="obj-button">Objetos Cadastrados</button>
-    </a>    
+    <button class="button" id="view-items-button" onclick="window.location.href='listagem.html'">Objetos Cadastrados</button>
 </section>
 
 <script src="script.js"></script>

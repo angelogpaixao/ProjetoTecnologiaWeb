@@ -1,90 +1,138 @@
-// Lista para armazenar os objetos cadastrados (simulação de memória temporária)
-let objetosPerdidos = [];
+// Função para adicionar ou editar um item
+document.getElementById('add-item-form')?.addEventListener('submit', function(event) {
+    event.preventDefault(); // Impede o envio do formulário
 
-// Função para cadastrar um novo objeto
-document.getElementById("add-item-form").addEventListener("submit", function (event) {
-    event.preventDefault();
+    const itemImage = document.getElementById('item-image').files[0];
+    const itemTitle = document.getElementById('item-title').value;
+    const itemDescription = document.getElementById('item-description').value;
+    const itemLocation = document.getElementById('item-location').value;
 
-    // Captura os valores do formulário
-    const imagem = document.getElementById("item-image").files[0];
-    const nome = document.getElementById("item-title").value;
-    const descricao = document.getElementById("item-description").value;
-    const localizacao = document.getElementById("item-location").value;
-
-    if (!imagem || !nome || !descricao || !localizacao) {
-        alert("Preencha todos os campos!");
-        return;
-    }
-
-    // Cria um objeto com os dados
-    const objeto = {
-        id: new Date().getTime(),
-        nome: nome,
-        descricao: descricao,
-        localizacao: localizacao,
-        imagemUrl: URL.createObjectURL(imagem),
+    // Cria um objeto para o item
+    const item = {
+        title: itemTitle,
+        description: itemDescription,
+        location: itemLocation,
+        image: itemImage ? URL.createObjectURL(itemImage) : ''
     };
 
-    // Adiciona o objeto à lista de objetos
-    objetosPerdidos.push(objeto);
+    // Verifica se é uma edição ou um novo item
+    const editIndex = localStorage.getItem('editIndex');
+    const items = JSON.parse(localStorage.getItem('items')) || [];
 
-    // Armazena no localStorage para a página de listagem
-    localStorage.setItem("objetosPerdidos", JSON.stringify(objetosPerdidos));
+    if (editIndex !== null && editIndex !== '') {
+        // Atualiza o item existente
+        items[editIndex] = item;
+        localStorage.removeItem('editIndex'); // Remove o índice de edição após a atualização
+        alert('Item atualizado com sucesso!');
+    } else {
+        // Adiciona um novo item
+        items.push(item);
+        alert('Item adicionado com sucesso!');
+    }
 
-    // Limpa o formulário após o cadastro
-    document.getElementById("add-item-form").reset();
+    // Salva os itens atualizados no LocalStorage
+    localStorage.setItem('items', JSON.stringify(items));
 
-    alert("Objeto cadastrado com sucesso!");
+    // Limpa o formulário
+    this.reset();
+
+    // Volta para a página de listagem após adicionar/editar
+    window.location.href = 'listagem.html';
 });
 
-// Função para carregar os objetos cadastrados na página de listagem
-function carregarObjetosCadastrados() {
-    // Verifica se há objetos no localStorage
-    const objetosSalvos = JSON.parse(localStorage.getItem("objetosPerdidos")) || [];
-    objetosPerdidos = objetosSalvos;
+// Função para exibir objetos cadastrados na Página 2 (Listagem)
+document.addEventListener('DOMContentLoaded', function() {
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    const container = document.getElementById('items-list-container');
 
-    const container = document.getElementById("items-list-container");
-    container.innerHTML = "";
+    // Verifica se existem itens e os exibe
+    if (items.length > 0) {
+        items.forEach((item, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
 
-    objetosPerdidos.forEach((objeto) => {
-        const itemDiv = document.createElement("div");
-        itemDiv.classList.add("item");
+            const image = document.createElement('img');
+            image.src = item.image;
+            image.alt = item.title;
+            image.style.width = '100px'; // Ajusta a largura da imagem
 
-        const img = document.createElement("img");
-        img.src = objeto.imagemUrl;
-        img.alt = objeto.nome;
+            const title = document.createElement('h3');
+            title.textContent = item.title;
 
-        const h2 = document.createElement("h2");
-        h2.textContent = objeto.nome;
+            const description = document.createElement('p');
+            description.textContent = item.description;
 
-        const pDesc = document.createElement("p");
-        pDesc.textContent = objeto.descricao;
+            const location = document.createElement('p');
+            location.textContent = `Localização: ${item.location}`;
 
-        const pLocal = document.createElement("p");
-        pLocal.textContent = `Localização: ${objeto.localizacao}`;
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Editar';
+            editButton.onclick = () => {
+                localStorage.setItem('editIndex', index); // Armazena o índice do item a ser editado
+                window.location.href = 'index.html'; // Vai para a página de edição
+            };
 
-        const btnExcluir = document.createElement("button");
-        btnExcluir.textContent = "Excluir";
-        btnExcluir.addEventListener("click", () => excluirObjeto(objeto.id));
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Excluir';
+            deleteButton.onclick = () => deleteItem(index);
 
-        itemDiv.appendChild(img);
-        itemDiv.appendChild(h2);
-        itemDiv.appendChild(pDesc);
-        itemDiv.appendChild(pLocal);
-        itemDiv.appendChild(btnExcluir);
+            itemDiv.appendChild(image);
+            itemDiv.appendChild(title);
+            itemDiv.appendChild(description);
+            itemDiv.appendChild(location);
+            itemDiv.appendChild(editButton);
+            itemDiv.appendChild(deleteButton);
+            container.appendChild(itemDiv);
+        });
+    } else {
+        container.textContent = 'Nenhum objeto cadastrado.';
+    }
+});
 
-        container.appendChild(itemDiv);
-    });
+// Função para excluir um item
+function deleteItem(index) {
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    items.splice(index, 1); // Remove o item do array
+    localStorage.setItem('items', JSON.stringify(items)); // Atualiza o LocalStorage
+    location.reload(); // Recarrega a página para atualizar a lista
 }
 
-// Função para excluir um objeto
-function excluirObjeto(id) {
-    objetosPerdidos = objetosPerdidos.filter((objeto) => objeto.id !== id);
-    localStorage.setItem("objetosPerdidos", JSON.stringify(objetosPerdidos));
-    carregarObjetosCadastrados();
+// Função para preencher o formulário com os dados do item a ser editado
+function prefillEditForm() {
+    const editIndex = localStorage.getItem('editIndex');
+    const submitButton = document.getElementById('submit-button');
+    const cancelEditButton = document.getElementById('cancel-edit-button');
+    const viewItemsButton = document.getElementById('view-items-button');
+
+    if (editIndex !== null && editIndex !== '') {
+        const items = JSON.parse(localStorage.getItem('items')) || [];
+        const item = items[editIndex];
+
+        document.getElementById('item-title').value = item.title;
+        document.getElementById('item-description').value = item.description;
+        document.getElementById('item-location').value = item.location;
+
+        // Mostra os botões de salvar e cancelar, e oculta o de ver itens
+        submitButton.textContent = 'Salvar Alterações';
+        cancelEditButton.style.display = 'inline'; // Mostra o botão de cancelar edição
+        viewItemsButton.style.display = 'none'; // Esconde o botão de ver itens
+    } else {
+        // Caso seja um novo item, limpa o formulário
+        document.getElementById('add-item-form').reset();
+        localStorage.removeItem('editIndex'); // Remove o índice de edição ao voltar para cadastro
+
+        // Mostra o botão de adicionar item e o botão de ver itens
+        submitButton.textContent = 'Adicionar Item';
+        cancelEditButton.style.display = 'none'; // Esconde o botão de cancelar
+        viewItemsButton.style.display = 'inline'; // Mostra o botão de ver itens
+    }
 }
 
-// Chama a função para carregar os objetos na página de listagem
-if (document.getElementById("items-list-container")) {
-    carregarObjetosCadastrados();
-}
+// Função para cancelar a edição
+document.getElementById('cancel-edit-button').addEventListener('click', function() {
+    localStorage.removeItem('editIndex'); // Remove o índice de edição
+    window.location.href = 'index.html'; // Recarrega a página para voltar ao modo de adição
+});
+
+// Chama a função para preencher o formulário se a Página 1 estiver sendo carregada
+window.onload = prefillEditForm;
