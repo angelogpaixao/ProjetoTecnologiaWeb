@@ -1,100 +1,171 @@
 // Função para adicionar ou editar um item
-document.getElementById('add-item-form')?.addEventListener('submit', function(event) {
+document.getElementById('add-item-form')?.addEventListener('submit', async function(event) {
     event.preventDefault(); // Impede o envio do formulário
 
     const itemImage = document.getElementById('item-image').files[0];
     const itemTitle = document.getElementById('item-title').value;
     const itemDescription = document.getElementById('item-description').value;
     const itemLocation = document.getElementById('item-location').value;
+    const itemFoundDate = document.getElementById('found-date').value;
+    const itemFoundBy = document.getElementById('found-by').value;
+    const itemReturned = document.getElementById('returned').value;
+    const itemReturnedDate = document.getElementById('returned-date').value;
+    const itemReturnedBy = document.getElementById('returned-by').value;
+
 
     // Cria um objeto para o item
-    const item = {
+    const itemData = {
         title: itemTitle,
-        description: itemDescription,
-        location: itemLocation,
-        image: itemImage ? URL.createObjectURL(itemImage) : ''
+        pictureLink: itemImage ? URL.createObjectURL(itemImage) : '',
+        currentLocation: itemLocation,
+        foundLocation: itemDescription,
+        foundDate: itemFoundDate,
+        whoFound: itemFoundBy,
+        isRetrieved: itemReturned,
+        whoRetrieved: itemReturnedBy,
+        retrievedDate: itemReturnedDate
     };
 
-    // Verifica se é uma edição ou um novo item
-    const editIndex = localStorage.getItem('editIndex');
-    const items = JSON.parse(localStorage.getItem('items')) || [];
+    try {
+        const editIndex = localStorage.getItem('editIndex');
 
-    if (editIndex !== null && editIndex !== '') {
-        // Atualiza o item existente
-        items[editIndex] = item;
-        localStorage.removeItem('editIndex'); // Remove o índice de edição após a atualização
-        alert('Item atualizado com sucesso!');
-    } else {
-        // Adiciona um novo item
-        items.push(item);
-        alert('Item adicionado com sucesso!');
+        // Verifica se é uma edição ou um novo item
+        if (editIndex !== null && editIndex !== '') {
+            // Caso seja edição, envia uma requisição PUT para a API de edição
+            const response = await fetch(`https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items/${editIndex}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(itemData)
+            });
+            if (response.ok) {
+                alert('Item atualizado com sucesso!');
+                localStorage.removeItem('editIndex');
+            } else {
+                throw new Error('Erro ao atualizar o item');
+            }
+        } else {
+            // Caso seja um novo item, envia uma requisição POST para a API de criação
+            const response = await fetch('https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(itemData)
+            });
+            if (response.ok) {
+                alert('Item adicionado com sucesso!');
+            } else {
+                throw new Error('Erro ao adicionar o item');
+            }
+        }
+
+        // Limpa o formulário
+        this.reset();
+
+        // Redireciona para a página de listagem após adicionar/editar
+        window.location.href = 'listagem.html';
+
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Ocorreu um erro ao processar a solicitação.');
     }
-
-    // Salva os itens atualizados no LocalStorage
-    localStorage.setItem('items', JSON.stringify(items));
-
-    // Limpa o formulário
-    this.reset();
-
-    // Volta para a página de listagem após adicionar/editar
-    window.location.href = 'listagem.html';
 });
 
-// Função para exibir objetos cadastrados na Página 2 (Listagem)
-document.addEventListener('DOMContentLoaded', function() {
-    const items = JSON.parse(localStorage.getItem('items')) || [];
+
+// Função para exibir objetos cadastrados
+document.addEventListener('DOMContentLoaded', async function() {
     const container = document.getElementById('items-list-container');
 
-    // Verifica se existem itens e os exibe
-    if (items.length > 0) {
-        items.forEach((item, index) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('item');
+    try {
+        // Realiza a requisição para a URL de listagem da API
+        const response = await fetch('https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items');
+        const items = await response.json();
 
-            const image = document.createElement('img');
-            image.src = item.image;
-            image.alt = item.title;
-            image.style.width = '100px'; // Ajusta a largura da imagem
+        // Verifica se existem itens e os exibe
+        if (items.length > 0) {
+            items.forEach((item) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('item');
 
-            const title = document.createElement('h3');
-            title.textContent = item.title;
+                const image = document.createElement('img');
+                image.src = item.imageUrl || ''; // Certifique-se de que a API retorna o URL da imagem corretamente
+                image.alt = item.title;
+                image.style.width = '100px';
 
-            const description = document.createElement('p');
-            description.textContent = item.description;
+                const title = document.createElement('h3');
+                title.textContent = item.title;
 
-            const location = document.createElement('p');
-            location.textContent = `Localização: ${item.location}`;
+                const description = document.createElement('p');
+                description.textContent = `Descrição: ${item.foundLocation}`;
 
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Editar';
-            editButton.onclick = () => {
-                localStorage.setItem('editIndex', index); // Armazena o índice do item a ser editado
-                window.location.href = 'index.html'; // Vai para a página de edição
-            };
+                const location = document.createElement('p');
+                location.textContent = `Local atual: ${item.currentLocation}`;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Excluir';
-            deleteButton.onclick = () => deleteItem(index);
+                const foundDate = document.createElement('p');
+                foundDate.textContent = `Data que foi encontrado: ${item.foundDate}`;
 
-            itemDiv.appendChild(image);
-            itemDiv.appendChild(title);
-            itemDiv.appendChild(description);
-            itemDiv.appendChild(location);
-            itemDiv.appendChild(editButton);
-            itemDiv.appendChild(deleteButton);
-            container.appendChild(itemDiv);
-        });
-    } else {
-        container.textContent = 'Nenhum objeto cadastrado.';
+                const foundBy = document.createElement('p');
+                foundBy.textContent = `Encontrado por: ${item.whoFound}`;
+
+                const returnedStatus = document.createElement('p');
+                returnedStatus.textContent = `Devolvido: ${item.isRetrieved ? 'Sim' : 'Não'}`;
+
+                const returnedDate = document.createElement('p');
+                returnedDate.textContent = `Data de devolução: ${item.retrievedDate || 'N/A'}`;
+
+                const returnedBy = document.createElement('p');
+                returnedBy.textContent = `Devolvido por: ${item.whoRetrieved || 'N/A'}`;
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Editar';
+                editButton.onclick = () => {
+                    localStorage.setItem('editIndex', item.id); // Armazena o ID do item a ser editado
+                    window.location.href = 'index.html'; // Vai para a página de edição
+                };
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.onclick = () => deleteItem(item.id);
+
+                // Adiciona todos os elementos ao itemDiv
+                itemDiv.appendChild(image);
+                itemDiv.appendChild(title);
+                itemDiv.appendChild(description);
+                itemDiv.appendChild(location);
+                itemDiv.appendChild(foundDate);
+                itemDiv.appendChild(foundBy);
+                itemDiv.appendChild(returnedStatus);
+                itemDiv.appendChild(returnedDate);
+                itemDiv.appendChild(returnedBy);
+                itemDiv.appendChild(editButton);
+                itemDiv.appendChild(deleteButton);
+
+                // Adiciona o itemDiv ao container
+                container.appendChild(itemDiv);
+            });
+        } else {
+            container.textContent = 'Nenhum objeto cadastrado.';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar itens:', error);
+        container.textContent = 'Erro ao carregar itens.';
     }
 });
 
 // Função para excluir um item
-function deleteItem(index) {
-    const items = JSON.parse(localStorage.getItem('items')) || [];
-    items.splice(index, 1); // Remove o item do array
-    localStorage.setItem('items', JSON.stringify(items)); // Atualiza o LocalStorage
-    location.reload(); // Recarrega a página para atualizar a lista
+async function deleteItem(id) {
+    try {
+        await fetch(`https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items/${id}`, {
+            method: 'DELETE'
+        });
+        alert('Item excluído com sucesso!');
+        location.reload(); // Recarrega a página para atualizar a lista
+    } catch (error) {
+        console.error('Erro ao excluir item:', error);
+        alert('Erro ao excluir item.');
+    }
 }
 
 // Função para preencher o formulário com os dados do item a ser editado

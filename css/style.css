@@ -37,7 +37,7 @@ header h1 {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 70%;
     margin: 20px;
 }
 
@@ -50,31 +50,70 @@ header h1 {
 label {
     display: block;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 5px; /* Diminui a margem superior do label */
     color: #555;
 }
 
-input[type="text"],
-textarea,
+.flex-row {
+    display: flex;
+    justify-content: space-between; /* Espaço entre os elementos */
+    flex-wrap: wrap; /* Permite que os itens se movam para a próxima linha se não houver espaço suficiente */
+    margin-bottom: 10px; /* Diminui o espaço abaixo das linhas */
+}
+
+.flex-item {
+    flex: 1; /* Cada item ocupa a mesma quantidade de espaço */
+    margin-right: 5px; /* Diminui o espaço à direita de cada item */
+    max-width: 25%; /* Diminui o tamanho máximo dos campos para 25% */
+}
+
+.flex-item:last-child {
+    margin-right: 0; /* Remove margem do último item na linha */
+}
+
 input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
+    width: 100%; /* A largura será de 100% do contêiner pai */
+    margin-top: 5px; /* Margem superior */
+    outline: none; /* Remove o contorno padrão */
+    transition: border-color 0.3s; /* Transição suave para a cor da borda */
+}
+
+/* Estilo dos campos de texto, textarea e input type="date" */
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    width: 100%; /* Mantém a largura em 100% do contêiner pai */
+    padding: 5px; /* Diminui o preenchimento dos campos */
+    margin-top: 5px; /* Margem superior */
+    margin-bottom: 5px; /* Diminui a margem inferior para espaçamento menor entre os campos */
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 1rem;
-    outline: none;
     transition: border-color 0.3s;
 }
 
 input[type="text"]:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     border-color: #0056b3;
 }
 
+/* Estilo do textarea */
 textarea {
-    resize: none;
-    height: 100px;
+    resize: vertical;
+    height: 80px; /* Diminui a altura do textarea */
+}
+
+/* Estilo do campo de seleção (single list) */
+select {
+    padding: 5px; /* Diminui o preenchimento dos campos de seleção */
+    margin-bottom: 5px; /* Diminui a margem inferior */
+}
+
+/* Foco nos campos de seleção */
+select:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 .button {
@@ -85,7 +124,7 @@ textarea {
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-    margin-top: 15px;
+    margin-top: 15px; /* Mantém a margem acima do botão */
     transition: background-color 0.3s;
 }
 
@@ -142,3 +181,4 @@ textarea {
     right: 20px; /* Distância da direita da página */
     z-index: 1000; /* Certifique-se de que o botão fique acima de outros elementos */
 }
+
