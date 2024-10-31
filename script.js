@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const foundBy = document.createElement('p');
                 foundBy.textContent = `Encontrado por: ${item.whoFound}`;
 
-                const returnedStatus = document.createElement('p');
-                returnedStatus.textContent = `Devolvido: ${item.isRetrieved ? 'Sim' : 'Não'}`;
+                const returnedStatus = document.createElement('h5');
+                returnedStatus.textContent = `Status: ${item.isRetrieved ? 'Devolvido' : 'Não devolvido'}`;
 
                 const returnedDate = document.createElement('p');
                 returnedDate.textContent = `Data de devolução: ${item.retrievedDate ? formatDate(item.retrievedDate) : 'N/A'}`;
@@ -156,11 +156,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // Adiciona todos os elementos ao itemDiv
                 itemDiv.appendChild(image);
                 itemDiv.appendChild(title);
+                itemDiv.appendChild(returnedStatus);
                 itemDiv.appendChild(description);
                 itemDiv.appendChild(location);
                 itemDiv.appendChild(foundDate);
                 itemDiv.appendChild(foundBy);
-                itemDiv.appendChild(returnedStatus);
                 itemDiv.appendChild(returnedDate);
                 itemDiv.appendChild(returnedBy);
                 itemDiv.appendChild(editButton);
