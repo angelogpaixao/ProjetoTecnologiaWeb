@@ -74,3 +74,39 @@
     margin-left: 20px;
   }
   
+  /* Responsividade para dispositivos móveis */
+@media (max-width: 600px) {
+  .container {
+      flex-direction: column; /* Coloca os elementos em coluna */
+      padding: 15px;
+      text-align: center;
+  }
+
+  .logo {
+      margin-right: 0;
+      margin-bottom: 15px; /* Espaçamento abaixo da logo */
+      width: 60px; /* Diminui o tamanho da logo */
+  }
+
+  .title {
+      font-size: 28px; /* Reduz o tamanho do título */
+  }
+
+  .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .button {
+      margin: 5px 0; /* Margem vertical entre os botões */
+      padding: 10px 15px;
+      font-size: 14px;
+  }
+
+  .character {
+      margin-left: 0;
+      margin-top: 15px;
+      width: 150px; /* Reduz o tamanho da imagem do personagem */
+  }
+}
