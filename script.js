@@ -137,10 +137,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 returnedStatus.textContent = `Status: ${item.isRetrieved ? 'Devolvido' : 'Não devolvido'}`;
 
                 const returnedDate = document.createElement('p');
-                returnedDate.textContent = `Data de devolução: ${item.retrievedDate ? formatDate(item.retrievedDate) : 'N/A'}`;
+                returnedDate.textContent = `Data de resgate: ${item.retrievedDate ? formatDate(item.retrievedDate) : 'N/A'}`;
 
                 const returnedBy = document.createElement('p');
-                returnedBy.textContent = `Devolvido por: ${item.whoRetrieved || 'N/A'}`;
+                returnedBy.textContent = `Resgatado por: ${item.whoRetrieved || 'N/A'}`;
 
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Editar';
