@@ -129,32 +129,46 @@ select:focus {
 }
 
 .button:hover {
-    background-color: #45a049;
+    background-color: #061d35;
 }
 
 /* Item List Section */
 #items-list-container {
     width: 100%;
-    max-width: 800px;
     margin: 20px 0;
     padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas com tamanhos iguais */
+    gap: 10px; /* Espaçamento entre os itens */
 }
 
 .item {
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 250px; /* Largura fixa para o item */
+}
+
+.item img {
+    width: 100%; /* Ocupe 100% da largura do contêiner */
+    height: 180px; /* Altura fixa para manter consistência */
+    object-fit: cover; /* Mantenha o aspecto da imagem */
+    border-radius: 5px;
+    margin: 0 auto 10px; /* Centralize e adicione espaçamento abaixo */
 }
 
 .item h3 {
-    font-size: 1.3rem;
-    color: #333;
+    margin-top: auto; /* Mantenha o título e o texto no final da div */
 }
 
 .item p {
-    font-size: 1rem;
+    font-size: 14px;
     color: #777;
     margin-top: 5px;
 }
@@ -182,3 +196,9 @@ select:focus {
     z-index: 1000; /* Certifique-se de que o botão fique acima de outros elementos */
 }
 
+.list-button{
+    position: fixed;
+    bottom: 60px; /* Distância do fundo da página */
+    right: 20px; /* Distância da direita da página */
+    z-index: 1000; /* Certifique-se de que o botão fique acima de outros elementos */
+}

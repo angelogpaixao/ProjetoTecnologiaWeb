@@ -1,4 +1,9 @@
 // Função para adicionar ou editar um item
+// Adicione essas variáveis com os detalhes da sua conta Cloudinary
+const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dffdd61lf/upload';
+const cloudinaryUploadPreset = 'ml_default'; // Você pode criar um upload preset nas configurações do Cloudinary
+
+// Função para adicionar ou editar um item
 document.getElementById('add-item-form')?.addEventListener('submit', async function(event) {
     event.preventDefault(); // Impede o envio do formulário
 
@@ -12,11 +17,37 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
     const itemReturnedDate = document.getElementById('returned-date').value;
     const itemReturnedBy = document.getElementById('returned-by').value;
 
+    let pictureLink = '';
+
+    if (itemImage) {
+        // Cria um FormData para enviar a imagem para o Cloudinary
+        const formData = new FormData();
+        formData.append('file', itemImage);
+        formData.append('upload_preset', cloudinaryUploadPreset);
+
+        try {
+            const cloudinaryResponse = await fetch(cloudinaryUrl, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (cloudinaryResponse.ok) {
+                const cloudinaryData = await cloudinaryResponse.json();
+                pictureLink = cloudinaryData.secure_url; // URL segura da imagem enviada
+            } else {
+                throw new Error('Erro ao enviar a imagem para o Cloudinary');
+            }
+        } catch (error) {
+            console.error('Erro ao enviar imagem:', error);
+            alert('Não foi possível enviar a imagem. Tente novamente.');
+            return;
+        }
+    }
 
     // Cria um objeto para o item
     const itemData = {
         title: itemTitle,
-        pictureLink: itemImage ? URL.createObjectURL(itemImage) : '',
+        pictureLink: pictureLink, // URL da imagem no Cloudinary
         currentLocation: itemLocation,
         foundLocation: itemDescription,
         foundDate: itemFoundDate,
@@ -25,13 +56,12 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
         whoRetrieved: itemReturnedBy,
         retrievedDate: itemReturnedDate
     };
+    
 
     try {
         const editIndex = localStorage.getItem('editIndex');
 
-        // Verifica se é uma edição ou um novo item
         if (editIndex !== null && editIndex !== '') {
-            // Caso seja edição, envia uma requisição PUT para a API de edição
             const response = await fetch(`https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items/${editIndex}`, {
                 method: 'PUT',
                 headers: {
@@ -46,7 +76,6 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
                 throw new Error('Erro ao atualizar o item');
             }
         } else {
-            // Caso seja um novo item, envia uma requisição POST para a API de criação
             const response = await fetch('https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items', {
                 method: 'POST',
                 headers: {
@@ -61,18 +90,14 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
             }
         }
 
-        // Limpa o formulário
         this.reset();
-
-        // Redireciona para a página de listagem após adicionar/editar
-        window.location.href = 'listagem.html';
+        window.location.href = 'itemList.html';
 
     } catch (error) {
         console.error('Erro:', error);
         alert('Ocorreu um erro ao processar a solicitação.');
     }
 });
-
 
 // Função para exibir objetos cadastrados
 document.addEventListener('DOMContentLoaded', async function() {
@@ -90,15 +115,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 itemDiv.classList.add('item');
 
                 const image = document.createElement('img');
-                image.src = item.imageUrl || ''; // Certifique-se de que a API retorna o URL da imagem corretamente
+                image.src = item.pictureLink || ''; // Certifique-se de que a API retorna o URL da imagem corretamente
                 image.alt = item.title;
-                image.style.width = '100px';
 
                 const title = document.createElement('h3');
                 title.textContent = item.title;
 
                 const description = document.createElement('p');
-                description.textContent = `Descrição: ${item.foundLocation}`;
+                description.textContent = `Local Encontrado: ${item.foundLocation}`;
 
                 const location = document.createElement('p');
                 location.textContent = `Local atual: ${item.currentLocation}`;
@@ -122,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 editButton.textContent = 'Editar';
                 editButton.onclick = () => {
                     localStorage.setItem('editIndex', item.id); // Armazena o ID do item a ser editado
-                    window.location.href = 'index.html'; // Vai para a página de edição
+                    window.location.href = 'itemRegister.html'; // Vai para a página de edição
                 };
 
                 const deleteButton = document.createElement('button');
@@ -169,40 +193,63 @@ async function deleteItem(id) {
 }
 
 // Função para preencher o formulário com os dados do item a ser editado
-function prefillEditForm() {
+async function prefillEditForm() {
     const editIndex = localStorage.getItem('editIndex');
     const submitButton = document.getElementById('submit-button');
     const cancelEditButton = document.getElementById('cancel-edit-button');
     const viewItemsButton = document.getElementById('view-items-button');
 
-    if (editIndex !== null && editIndex !== '') {
-        const items = JSON.parse(localStorage.getItem('items')) || [];
-        const item = items[editIndex];
+    if (editIndex) {
+        try {
+            // Faz a requisição à API para obter o item específico
+            const response = await fetch(`https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items/${editIndex}`);
+            
+            if (!response.ok) throw new Error('Erro ao buscar item da API');
 
-        document.getElementById('item-title').value = item.title;
-        document.getElementById('item-description').value = item.description;
-        document.getElementById('item-location').value = item.location;
+            const item = await response.json();
 
-        // Mostra os botões de salvar e cancelar, e oculta o de ver itens
-        submitButton.textContent = 'Salvar Alterações';
-        cancelEditButton.style.display = 'inline'; // Mostra o botão de cancelar edição
-        viewItemsButton.style.display = 'none'; // Esconde o botão de ver itens
+            // Verifique se o item realmente existe
+            if (item) {
+                document.getElementById('item-title').value = item.title || '';
+                document.getElementById('item-description').value = item.foundLocation || '';
+                document.getElementById('item-location').value = item.currentLocation || '';
+                document.getElementById('found-date').value = item.foundDate || '';
+                document.getElementById('found-by').value = item.whoFound || '';
+                document.getElementById('returned').value = item.isRetrieved ? 'Sim' : 'Não';
+                document.getElementById('returned-date').value = item.retrievedDate || '';
+                document.getElementById('returned-by').value = item.whoRetrieved || '';
+
+                // Mostra os botões de salvar e cancelar, e oculta o de ver itens
+                submitButton.textContent = 'Salvar Alterações';
+                cancelEditButton.style.display = 'inline';
+                viewItemsButton.style.display = 'none';
+            } else {
+                console.error('Item não encontrado no índice fornecido');
+                resetForm();
+            }
+        } catch (error) {
+            console.error('Erro ao buscar item:', error);
+            alert('Erro ao buscar dados do item. Tente novamente.');
+            resetForm();
+        }
     } else {
-        // Caso seja um novo item, limpa o formulário
-        document.getElementById('add-item-form').reset();
-        localStorage.removeItem('editIndex'); // Remove o índice de edição ao voltar para cadastro
+        // Caso seja um novo item ou o índice não exista, limpa o formulário
+        resetForm();
+    }
 
-        // Mostra o botão de adicionar item e o botão de ver itens
+    function resetForm() {
+        document.getElementById('add-item-form').reset();
+        localStorage.removeItem('editIndex');
         submitButton.textContent = 'Adicionar Item';
-        cancelEditButton.style.display = 'none'; // Esconde o botão de cancelar
-        viewItemsButton.style.display = 'inline'; // Mostra o botão de ver itens
+        cancelEditButton.style.display = 'none';
+        viewItemsButton.style.display = 'inline';
     }
 }
 
 // Função para cancelar a edição
 document.getElementById('cancel-edit-button').addEventListener('click', function() {
     localStorage.removeItem('editIndex'); // Remove o índice de edição
-    window.location.href = 'index.html'; // Recarrega a página para voltar ao modo de adição
+    window.location.href = 'itemList.html'; // Recarrega a página para voltar ao modo de adição
 });
 
 // Chama a função para preencher o formulário se a Página 1 estiver sendo carregada
