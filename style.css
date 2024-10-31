@@ -250,16 +250,6 @@ select:focus {
         margin-top: 10px;
     }
 
-    /* Botões flutuantes */
-    .back-button, .list-button {
-        bottom: 15px;
-        right: 15px;
-    }
-
-    .list-button {
-        bottom: 60px;
-    }
-
     /* Ajuste de grid da lista de itens */
     #items-list-container {
         grid-template-columns: repeat(2, 1fr); /* 2 colunas em telas menores */
