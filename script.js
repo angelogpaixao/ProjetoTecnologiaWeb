@@ -114,13 +114,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add('item');
 
-                const itemDivContent = document.createElement('div');
-                itemDivContent.classList.add('item-content');
-
                 const image = document.createElement('img');
                 image.src = item.pictureLink || ''; // Certifique-se de que a API retorna o URL da imagem corretamente
                 image.alt = item.title;
-                image.style.width = '25%';
 
                 const title = document.createElement('h3');
                 title.textContent = item.title;
@@ -141,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 returnedStatus.textContent = `Devolvido: ${item.isRetrieved ? 'Sim' : 'Não'}`;
 
                 const returnedDate = document.createElement('p');
-                returnedDate.textContent = `Data de devolução: ${item.retrievedDate ? formatDate(item.retrievedDate) : 'N/A'}`;
+                returnedDate.textContent = `Data de devolução: ${item.retrievedDate || 'N/A'}`;
 
                 const returnedBy = document.createElement('p');
                 returnedBy.textContent = `Devolvido por: ${item.whoRetrieved || 'N/A'}`;
@@ -150,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 editButton.textContent = 'Editar';
                 editButton.onclick = () => {
                     localStorage.setItem('editIndex', item.id); // Armazena o ID do item a ser editado
-                    window.location.href = 'index.html'; // Vai para a página de edição
+                    window.location.href = 'itemRegister.html'; // Vai para a página de edição
                 };
 
                 const deleteButton = document.createElement('button');
@@ -159,19 +155,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 // Adiciona todos os elementos ao itemDiv
                 itemDiv.appendChild(image);
-                itemDivContent.appendChild(title);
-                itemDivContent.appendChild(description);
-                itemDivContent.appendChild(location);
-                itemDivContent.appendChild(foundDate);
-                itemDivContent.appendChild(foundBy);
-                itemDivContent.appendChild(returnedStatus);
-                itemDivContent.appendChild(returnedDate);
-                itemDivContent.appendChild(returnedBy);
-                itemDivContent.appendChild(editButton);
-                itemDivContent.appendChild(deleteButton);
-
-                // Adiciona o itemDivContent ao itemDiv
-                itemDiv.appendChild(itemDivContent);
+                itemDiv.appendChild(title);
+                itemDiv.appendChild(description);
+                itemDiv.appendChild(location);
+                itemDiv.appendChild(foundDate);
+                itemDiv.appendChild(foundBy);
+                itemDiv.appendChild(returnedStatus);
+                itemDiv.appendChild(returnedDate);
+                itemDiv.appendChild(returnedBy);
+                itemDiv.appendChild(editButton);
+                itemDiv.appendChild(deleteButton);
 
                 // Adiciona o itemDiv ao container
                 container.appendChild(itemDiv);
