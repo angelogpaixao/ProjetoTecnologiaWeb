@@ -242,6 +242,21 @@ select:focus {
         padding: 8px;
     }
 
+    /* Ajustando os botões fixos para que não fiquem sobre o formulário */
+    .back-button, .list-button {
+        position: relative; /* Altera a posição para relativa */
+        bottom: auto;
+        right: auto;
+        margin-top: 10px;
+        width: 100%; /* Ocupa toda a largura */
+        text-align: center; /* Centraliza o texto */
+    }
+
+    /* Separação entre os botões para melhorar o layout em telas pequenas */
+    .back-button {
+        margin-bottom: 10px;
+    }
+    
     /* Estilo do botão */
     .button {
         font-size: 0.9rem;
