@@ -202,3 +202,75 @@ select:focus {
     right: 20px; /* Distância da direita da página */
     z-index: 1000; /* Certifique-se de que o botão fique acima de outros elementos */
 }
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    /* Ajusta o título */
+    header h1 {
+        font-size: 1.5rem;
+        padding: 15px;
+    }
+
+    /* Form Section */
+    .form-section {
+        padding: 15px;
+        max-width: 90%; /* Reduz a largura máxima */
+        margin: 15px auto;
+    }
+
+    .form-section h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Ajusta as filas flexíveis */
+    .flex-row {
+        flex-direction: column; /* Empilha os itens em uma coluna */
+        gap: 10px;
+    }
+
+    .flex-item {
+        max-width: 100%; /* Ocupa 100% da largura */
+        margin-right: 0;
+    }
+
+    /* Ajusta os campos de entrada e textarea */
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+        font-size: 0.9rem; /* Reduz o tamanho da fonte para caber melhor */
+        padding: 8px;
+    }
+
+    /* Estilo do botão */
+    .button {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+        width: 100%; /* Botões ocupam a largura completa */
+        margin-top: 10px;
+    }
+
+    /* Botões flutuantes */
+    .back-button, .list-button {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .list-button {
+        bottom: 60px;
+    }
+
+    /* Ajuste de grid da lista de itens */
+    #items-list-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas em telas menores */
+        gap: 8px;
+    }
+
+    .item {
+        width: 100%; /* Largura completa para itens na lista */
+    }
+
+    .item img {
+        height: 150px; /* Altura reduzida para se adequar à tela */
+    }
+}
