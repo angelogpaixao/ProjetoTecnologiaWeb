@@ -91,7 +91,7 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
         }
 
         this.reset();
-        window.location.href = '../otherPages/itemList.html';
+        window.location.href = 'itemList.html';
 
     } catch (error) {
         console.error('Erro:', error);
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 editButton.textContent = 'Editar';
                 editButton.onclick = () => {
                     localStorage.setItem('editIndex', item.id); // Armazena o ID do item a ser editado
-                    window.location.href = '../otherPages/itemRegister.html'; // Vai para a página de edição
+                    window.location.href = 'itemRegister.html'; // Vai para a página de edição
                 };
 
                 const deleteButton = document.createElement('button');
@@ -249,7 +249,7 @@ async function prefillEditForm() {
 // Função para cancelar a edição
 document.getElementById('cancel-edit-button').addEventListener('click', function() {
     localStorage.removeItem('editIndex'); // Remove o índice de edição
-    window.location.href = '../otherPages/itemList.html'; // Recarrega a página para voltar ao modo de adição
+    window.location.href = 'itemList.html'; // Recarrega a página para voltar ao modo de adição
 });
 
 // Chama a função para preencher o formulário se a Página 1 estiver sendo carregada
