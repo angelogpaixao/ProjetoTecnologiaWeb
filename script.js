@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 returnedStatus.textContent = `Devolvido: ${item.isRetrieved ? 'Sim' : 'Não'}`;
 
                 const returnedDate = document.createElement('p');
-                returnedDate.textContent = `Data de devolução: ${item.retrievedDate || 'N/A'}`;
+                returnedDate.textContent = `Data de devolução: ${item.retrievedDate ? formatDate(item.retrievedDate) : 'N/A'}`;
 
                 const returnedBy = document.createElement('p');
                 returnedBy.textContent = `Devolvido por: ${item.whoRetrieved || 'N/A'}`;
