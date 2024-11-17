@@ -91,7 +91,6 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
         }
 
         this.reset();
-        window.location.href = 'itemList.html';
 
     } catch (error) {
         console.error('Erro:', error);
