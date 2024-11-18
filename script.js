@@ -1,17 +1,38 @@
-// Função para adicionar ou editar um item
+// Seleciona o campo de data
+const foundDateInput = document.getElementById('found-date');
+
+// Adiciona um evento 'change' ao campo de data
+foundDateInput.addEventListener('change', () => {
+    // Obtém o valor da data (formato yyyy-mm-dd)
+    const rawDate = foundDateInput.value;
+
+    // Se a data for válida
+    if (rawDate) {
+        // Converte para o formato dd/mm/yyyy
+        const [year, month, day] = rawDate.split('-');
+        const formattedDate = `${day}/${month}/${year}`;
+
+        // Exibe a data formatada no console (ou use como necessário)
+        console.log(`Data formatada: ${formattedDate}`);
+        
+        // Exemplo: Você pode alterar o valor do campo (não recomendado se o input precisa de "date")
+        // foundDateInput.value = formattedDate;
+    }
+});
+
 // Adicione essas variáveis com os detalhes da sua conta Cloudinary
 const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dffdd61lf/upload';
 const cloudinaryUploadPreset = 'ml_default'; // Você pode criar um upload preset nas configurações do Cloudinary
 
 // Função para adicionar ou editar um item
 document.getElementById('add-item-form')?.addEventListener('submit', async function(event) {
-    event.preventDefault(); // Impede o envio do formulário
+    event.preventDefault(); // Impede que o formulário recarregue a página ao ser enviado.
 
     const itemImage = document.getElementById('item-image').files[0];
     const itemTitle = document.getElementById('item-title').value;
     const itemDescription = document.getElementById('item-description').value;
     const itemLocation = document.getElementById('item-location').value;
-    const itemFoundDate = document.getElementById('found-date').value;
+    const itemFoundDate = formattedDate;
     const itemFoundBy = document.getElementById('found-by').value;
     const itemReturned = document.getElementById('returned').value;
     const itemReturnedDate = document.getElementById('returned-date').value;
