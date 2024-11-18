@@ -1,4 +1,9 @@
 // Função para adicionar ou editar um item
+// Adicione essas variáveis com os detalhes da sua conta Cloudinary
+const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dffdd61lf/upload';
+const cloudinaryUploadPreset = 'ml_default'; // Você pode criar um upload preset nas configurações do Cloudinary
+
+// Função para adicionar ou editar um item
 document.getElementById('add-item-form')?.addEventListener('submit', async function(event) {
     event.preventDefault(); // Impede o envio do formulário
 
