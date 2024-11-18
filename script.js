@@ -59,6 +59,11 @@ document.getElementById('add-item-form')?.addEventListener('submit', async funct
 
     try {
         const editIndex = localStorage.getItem('editIndex');
+        if (!editIndex) {
+            console.error('Índice de edição não definido.');
+            alert('Erro: Não há item selecionado para edição.');
+            return;
+        }
 
         if (editIndex !== null && editIndex !== '') {
             const response = await fetch(`https://tw-lostandfound-api-392265918189.us-central1.run.app/api/v1/items/${editIndex}`, {
